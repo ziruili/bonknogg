@@ -1,17 +1,22 @@
 import pyglet
+import pyglet.window.key as key
 import sys
 import requests
+import json
 from pyglet.gl import *
 
 display = pyglet.canvas.Display()
 screen = display.get_default_screen()
 
-window = pyglet.window.Window(screen.width - 200, screen.height - 200, caption='bonknogg', visible=True)
+window = pyglet.window.Window(screen.width, screen.height, caption='bonknogg', fullscreen=True, visible=True)
+keys = key.KeyStateHandler()
+window.push_handlers(keys)
+#window.set_exclusive_mouse(True)
 
 host = sys.argv[1]
 
 def get():
-    return requests.get(f'{host}:6969').content
+    return requests.get(f'{host}:6969',headers={'X': json.dumps(keys)}).content
 
 pos = []
 

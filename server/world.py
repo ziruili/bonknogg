@@ -36,6 +36,7 @@ class World:
         self.dashes_left = {}
         self.pf = {}
         self.dash_frame = {}
+        self.dash_dir = {}
 
     def gen_vertices(self, token):
         sz = [self.dashes_left[token]]
@@ -76,9 +77,20 @@ class World:
         self.dashes_left[token] = 1
         self.pf[token] = p1f
         self.dash_frame[token] = 0
+        self.dash_dir[token] = {}
 
     def step(self):
         for token in self.players:
+            if self.dash_frame[token] > 0:
+                p1 = self.players[token]
+                if self.dash_dir[token]["L"]:
+                    p1.linearVelocity.x = min(p1.linearVelocity.y, -3.6)
+                if self.dash_dir[token]["R"]:
+                    p1.linearVelocity.x = max(p1.linearVelocity.y, 3.6)
+                if self.dash_dir[token]["D"]:
+                    p1.linearVelocity.y = min(p1.linearVelocity.y, -3.6)
+                if self.dash_dir[token]["U"]:
+                    p1.linearVelocity.y = max(p1.linearVelocity.y, 3.6)
             self.players[token].linearVelocity *= damp
             self.acc[token] = self.players[token].linearVelocity.y
         self.world.Step(dt, 5, 5)
@@ -101,14 +113,10 @@ class World:
         p1 = self.players[token]
         acc = self.acc[token]
         if keys['X'] and self.dashes_left[token] > 0:
-            if keys["L"]:
-                p1.linearVelocity.x = min(p1.linearVelocity.y, -4.5)
-            if keys["R"]:
-                p1.linearVelocity.x = max(p1.linearVelocity.y, 4.5)
-            if keys["D"]:
-                p1.linearVelocity.y = min(p1.linearVelocity.y, -4.5)
-            if keys["U"]:
-                p1.linearVelocity.y = max(p1.linearVelocity.y, 4.5)
+            self.dash_dir[token]['L'] = keys['L']
+            self.dash_dir[token]['R'] = keys['R']
+            self.dash_dir[token]['D'] = keys['D']
+            self.dash_dir[token]['U'] = keys['U']
             self.dashes_left[token] -= 1
             self.dash_frame[token] = 30
         else:

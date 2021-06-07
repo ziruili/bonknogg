@@ -97,6 +97,6 @@ def update(dt):
         polygons.append(w)
         cols.append(c)
 
-pyglet.clock.schedule_interval(update, 0.016)
+pyglet.clock.schedule_interval(update, 0.033)
 pyglet.app.run()
 

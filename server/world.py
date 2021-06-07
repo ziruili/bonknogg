@@ -4,6 +4,7 @@ from Box2D import *
 import time
 
 dt = 0.016
+damp = 0.99
 
 class World:
     def __init__(self):
@@ -78,6 +79,7 @@ class World:
 
     def step(self):
         for token in self.players:
+            self.players[token].linearVelocity *= damp
             self.acc[token] = self.players[token].linearVelocity.y
         self.world.Step(dt, 5, 5)
         for token in self.players:
@@ -108,7 +110,7 @@ class World:
             if keys["U"]:
                 p1.linearVelocity.y = max(p1.linearVelocity.y, 4.5)
             self.dashes_left[token] -= 1
-            self.dash_frame[token] = 50
+            self.dash_frame[token] = 30
         else:
             if keys["L"]:
                 p1.ApplyForce(force=(-5,0),point=p1.position,wake=True)
@@ -120,7 +122,7 @@ class World:
                 if acc > -10 * 0.9:
                     p1.linearVelocity.y = max(p1.linearVelocity.y, 4.2)
 
-                    if self.dash_frame[token] > 0:
+                    if self.dash_frame[token] > 100000:
                         self.pf[token].restitution = 1
 
         return json.dumps(self.gen_vertices(token))

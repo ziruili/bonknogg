@@ -68,7 +68,7 @@ def update(dt):
 
     polygons.append([0, window.height - 50, 0, window.height, window.width, window.height, window.width, window.height - 50])
     if dashes == 0:
-        cols.append([0.4, 0.6, 1.0] * 4)
+        cols.append([0.5, 1.0, 1.0] * 4)
     elif dashes == 1:
         cols.append([0.9, 0.2, 0.2] * 4)
     else:

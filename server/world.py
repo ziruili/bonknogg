@@ -20,12 +20,12 @@ class World:
         )
         self.objs.append(ground)
         ground = self.world.CreateStaticBody(
-                position=(-5,2.5),
+                position=(-5,2.6),
                 shapes=b2PolygonShape(box=(2,0.1)),
         )
         self.objs.append(ground)
         ground = self.world.CreateStaticBody(
-                position=(5,2.5),
+                position=(5,2.6),
                 shapes=b2PolygonShape(box=(2,0.1)),
         )
         self.objs.append(ground)
@@ -66,7 +66,7 @@ class World:
         p1 = self.world.CreateDynamicBody(position=(0,7.2))
         p1f = p1.CreateFixture(
                 shape=b2CircleShape(pos=(0, 0), radius=0.2),
-                density=7.95775387622, friction=1.0, restitution=0.15
+                density=7.95775387622, friction=0.2, restitution=0.15
                 )
 
         self.players[token] = p1
@@ -84,13 +84,13 @@ class World:
             if self.dash_frame[token] > 0:
                 p1 = self.players[token]
                 if self.dash_dir[token]["L"]:
-                    p1.linearVelocity.x = min(p1.linearVelocity.y, -3.6)
+                    p1.linearVelocity.x = min(p1.linearVelocity.y, -4.2)
                 if self.dash_dir[token]["R"]:
-                    p1.linearVelocity.x = max(p1.linearVelocity.y, 3.6)
+                    p1.linearVelocity.x = max(p1.linearVelocity.y, 4.2)
                 if self.dash_dir[token]["D"]:
                     p1.linearVelocity.y = min(p1.linearVelocity.y, -3.6)
                 if self.dash_dir[token]["U"]:
-                    p1.linearVelocity.y = max(p1.linearVelocity.y, 3.6)
+                    p1.linearVelocity.y = max(p1.linearVelocity.y, 2.2)
             self.players[token].linearVelocity *= damp
             self.acc[token] = self.players[token].linearVelocity.y
         self.world.Step(dt, 5, 5)

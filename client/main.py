@@ -14,12 +14,9 @@ screen = display.get_default_screen()
 window = pyglet.window.Window(1320, 760, caption='bonknogg', visible=True)
 keys = key.KeyStateHandler()
 window.push_handlers(keys)
-#window.set_exclusive_mouse(True)
 batch = pyglet.graphics.Batch()
 
 host = sys.argv[1]
-
-window.set_exclusive_keyboard()
 
 token = ''.join(random.choices('0123456789abcdef', k=8))
 
@@ -33,11 +30,13 @@ options = {
     "Z":key.Z
 }
 
+sess = requests.Session()
+
 def get():
     tem = {}
     for i in options:
         tem[i]=keys[options[i]]
-    return requests.get(f'{host}:6969',headers={'token': token, 'X': json.dumps(tem)}).content.decode('utf-8')
+    return sess.get(f'{host}:6969',headers={'token': token, 'X': json.dumps(tem)}).content.decode('utf-8')
 
 polygons = []
 cols = []

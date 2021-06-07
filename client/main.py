@@ -63,7 +63,18 @@ def update(dt):
 
     polygons = []
     cols = []
-    for s in obj['sz']:
+
+    dashes = int(obj['sz'][0])
+
+    polygons.append([0, window.height - 50, 0, window.height, window.width, window.height, window.width, window.height - 50])
+    if dashes == 0:
+        cols.append([0.4, 0.6, 1.0] * 4)
+    elif dashes == 1:
+        cols.append([0.9, 0.2, 0.2] * 4)
+    else:
+        cols.append([0.9, 0.6, 1.0] * 4)
+
+    for s in obj['sz'][1:]:
         sz = int(s)
 
         w = []

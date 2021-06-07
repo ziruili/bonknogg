@@ -31,8 +31,13 @@ class World:
 
         self.acc = {}
 
-    def gen_vertices(self):
-        sz = []
+        # dash
+        self.dashes_left = {}
+        self.pf = {}
+        self.dash_frame = {}
+
+    def gen_vertices(self, token):
+        sz = [self.dashes_left[token]]
         vs = []
         for obj in self.objs:
             for fix in obj.fixtures:
@@ -42,7 +47,7 @@ class World:
                 for vertex in shape.vertices:
                     vs.append(vertex[0] + obj.position.x)
                     vs.append(vertex[1] + obj.position.y)
-                    vs.extend([0.2, 0.7, 0.4])
+                    vs.extend([0.2, 0.5, 0.2])
 
 
         for token in self.players:
@@ -59,12 +64,17 @@ class World:
         p1 = self.world.CreateDynamicBody(position=(0,7.2))
         p1f = p1.CreateFixture(
                 shape=b2CircleShape(pos=(0, 0), radius=0.2),
-                density=7.95775387622, friction=1.0, restitution=0.12
+                density=7.95775387622, friction=1.0, restitution=0.15
                 )
 
         self.players[token] = p1
         self.acc[token] = 0
         self.cols[token] = [random.random() + 0.3, random.random() + 0.3, random.random() + 0.3]
+
+        # dash
+        self.dashes_left[token] = 1
+        self.pf[token] = p1f
+        self.dash_frame[token] = 0
 
     def step(self):
         for token in self.players:
@@ -72,6 +82,14 @@ class World:
         self.world.Step(dt, 5, 5)
         for token in self.players:
             self.acc[token] = (self.players[token].linearVelocity.y - self.acc[token]) / dt
+
+            if self.acc[token] > -10 * 0.9:
+                self.dashes_left[token] = 1
+
+            self.dash_frame[token] -= 1
+
+            if self.dash_frame[token] <= 0:
+                self.pf[token].restitution = 0.15
         time.sleep(dt)
 
     def parse(self, token, keys):
@@ -80,16 +98,32 @@ class World:
 
         p1 = self.players[token]
         acc = self.acc[token]
-        if keys["L"]:
-            p1.ApplyForce(force=(-5,0),point=p1.position,wake=True)
-        if keys["R"]:
-            p1.ApplyForce(force=(5,0),point=p1.position,wake=True)
-        if keys["D"]:
-            p1.ApplyForce(force=(0,-5),point=p1.position,wake=True)
-        if keys["C"]:
-            if acc > -10 * 0.75:
-                p1.linearVelocity.y = max(p1.linearVelocity.y, 5.2)
-        return json.dumps(self.gen_vertices())
+        if keys['X'] and self.dashes_left[token] > 0:
+            if keys["L"]:
+                p1.linearVelocity.x = min(p1.linearVelocity.y, -4.5)
+            if keys["R"]:
+                p1.linearVelocity.x = max(p1.linearVelocity.y, 4.5)
+            if keys["D"]:
+                p1.linearVelocity.y = min(p1.linearVelocity.y, -4.5)
+            if keys["U"]:
+                p1.linearVelocity.y = max(p1.linearVelocity.y, 4.5)
+            self.dashes_left[token] -= 1
+            self.dash_frame[token] = 50
+        else:
+            if keys["L"]:
+                p1.ApplyForce(force=(-5,0),point=p1.position,wake=True)
+            if keys["R"]:
+                p1.ApplyForce(force=(5,0),point=p1.position,wake=True)
+            if keys["D"]:
+                p1.ApplyForce(force=(0,-5),point=p1.position,wake=True)
+            if keys["C"]:
+                if acc > -10 * 0.9:
+                    p1.linearVelocity.y = max(p1.linearVelocity.y, 4.2)
+
+                    if self.dash_frame[token] > 0:
+                        self.pf[token].restitution = 1
+
+        return json.dumps(self.gen_vertices(token))
 
 class WorldManager:
     def __init__(self):
@@ -106,4 +140,3 @@ class WorldManager:
         return self.worlds[0].parse(headers['token'], keys)
 
 
- 

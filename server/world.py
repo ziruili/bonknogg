@@ -66,7 +66,7 @@ class World:
         p1 = self.world.CreateDynamicBody(position=(0,7.2))
         p1f = p1.CreateFixture(
                 shape=b2CircleShape(pos=(0, 0), radius=0.2),
-                density=7.95775387622, friction=0.2, restitution=0.15
+                density=7.95775387622, friction=0.0, restitution=1.0
                 )
 
         self.players[token] = p1

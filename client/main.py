@@ -40,8 +40,8 @@ def get():
     tem = {}
     for i in options:
         tem[i]=keys[options[i]]
-    sock.sendall({'token': token, 'X': json.dumps(tem)})
-    return socks.recv(1024)
+    sock.sendall(json.dumps({'token': token, 'X': json.dumps(tem)}).encode('utf-8'))
+    return sock.recv(1024)
 
 polygons = []
 cols = []
@@ -61,7 +61,11 @@ def update(dt):
     global cols
 
     scl = 60
-    obj = json.loads(get())
+    temp=get()
+    print(temp)
+    if len(temp) == 0:
+       return 
+    obj = json.loads(temp)
     ptr = 0
     vs = list(map(float, obj['vs']))
 

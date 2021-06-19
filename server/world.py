@@ -11,26 +11,52 @@ class World:
     def __init__(self):
         self.players = {}
         self.world = b2World(gravity=(0, -10), fixedRotation=True)
+        self.world.velocityThreshold = (1e10)
 
         self.objs = []
         self.cols = {}
 
         ground = self.world.CreateStaticBody(
-                position=(0,1),
-                shapes=b2PolygonShape(box=(5,1)),
+                position=(0,3),
+                shapes=b2PolygonShape(box=(18,0.3)),
         )
         self.objs.append(ground)
         ground = self.world.CreateStaticBody(
-                position=(-5,2.6),
+                position=(0,1),
+                shapes=b2PolygonShape(box=(20,0.2)),
+        )
+        self.objs.append(ground)
+        ground = self.world.CreateStaticBody(
+                position=(-5,4.2),
                 shapes=b2PolygonShape(box=(2,0.1)),
         )
         self.objs.append(ground)
         ground = self.world.CreateStaticBody(
-                position=(5,2.6),
+                position=(5,4.2),
                 shapes=b2PolygonShape(box=(2,0.1)),
         )
         self.objs.append(ground)
 
+        ground = self.world.CreateStaticBody(
+                position=(-21,5),
+                shapes=b2PolygonShape(box=(0.22,7)),
+        )
+        self.objs.append(ground)
+        ground = self.world.CreateStaticBody(
+                position=(21,5),
+                shapes=b2PolygonShape(box=(0.22,7)),
+        )
+        self.objs.append(ground)
+        ground = self.world.CreateStaticBody(
+                position=(-5,4),
+                shapes=b2PolygonShape(vertices=[(2, 3), (0, 4), (3, 7)]),
+        )
+        self.objs.append(ground)
+        ground = self.world.CreateStaticBody(
+                position=(5,4),
+                shapes=b2PolygonShape(vertices=[(6, 1), (0.24, 4.24), (3, 7)]),
+        )
+        self.objs.append(ground)
         self.acc = {}
 
         # dash
@@ -67,8 +93,10 @@ class World:
         p1 = self.world.CreateDynamicBody(position=(0,7.2))
         p1f = p1.CreateFixture(
                 shape=b2CircleShape(pos=(0, 0), radius=0.2),
-                density=7.95775387622, friction=0.2, restitution=0.15
+                density=7.95775387622, friction=0.2, restitution=0.3
                 )
+        
+        p1.linearDamping = 0
 
         self.players[token] = p1
         self.acc[token] = 0
@@ -107,8 +135,7 @@ class World:
                     p1.linearVelocity.y += 25 * dt
             if self.dash_frame[token] == 0:
                 p1 = self.players[token]
-                p1.linearVelocity.x*=0.3
-                p1.linearVelocity.y*=0.3
+                p1.linearVelocity*=0.35
 
             if self.dash_frame[token] < 0 and self.acc[token] > -10 * 0.99:
                 self.dashes_left[token] = 1
@@ -122,7 +149,7 @@ class World:
 
         p1 = self.players[token]
         acc = self.acc[token]
-        if keys['X'] and self.dashes_left[token] > 0 and self.dash_frame[token] < -30:
+        if keys['X'] and self.dashes_left[token] > 0 and self.dash_frame[token] < -0:
             self.dash_dir[token]['L'] = keys['L']
             self.dash_dir[token]['R'] = keys['R']
             self.dash_dir[token]['D'] = keys['D']
@@ -141,9 +168,10 @@ class World:
                     p1.linearVelocity.y = max(p1.linearVelocity.y, 6) 
 
                     if self.dash_frame[token] > 0:
-                        p1.linearVelocity.x *= 1.27
-                        p1.linearVelocity.y *= 1.05
+                        p1.linearVelocity.x *= 1.79234
+                        p1.linearVelocity.y *= 1.5411239
                         self.dash_frame[token] = -1
+                        self.dashes_left[token] = 1
 
         return json.dumps(self.gen_vertices(token))
 

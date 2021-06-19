@@ -24,8 +24,7 @@ def main():
     game = threading.Thread(target=main_game)
     game.start()
 
-    with socketserver.TCPServer((host, 6969), Server) as A:
-        print('READY')
-        A.serve_forever()
-
-main()
+    with socketserver.TCPServer((host, 6969), Server) as a:
+        aThread = threading.Thread(target=a.serve_forever())
+        aThread.daemon=True
+        aThread.start()

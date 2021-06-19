@@ -40,7 +40,7 @@ def get():
     for i in options:
         tem[i]=keys[options[i]]
     sock.sendto(json.dumps({'token': token, 'X': json.dumps(tem)}).encode('utf-8'), (host, 6969))
-    return sock.recv(6969)
+    return sock.recv(20000)
 
 polygons = []
 cols = []
@@ -104,6 +104,6 @@ def update(dt):
         polygons.append(w)
         cols.append(c)
 
-pyglet.clock.schedule_interval(update, 0.016)
+pyglet.clock.schedule_interval(update, 1/60)
 pyglet.app.run()
 

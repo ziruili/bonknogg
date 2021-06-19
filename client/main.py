@@ -19,7 +19,7 @@ batch = pyglet.graphics.Batch()
 
 host = sys.argv[1]
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.connect((host, 6969))
 
 token = ''.join(random.choices('0123456789abcdef', k=8))

@@ -16,11 +16,12 @@ def main_game():
 class Server(socketserver.BaseRequestHandler):
     def handle(self):
         #self.request.sendall("test".encode('utf-8'))
-        while True:
-            response = wm.parse(json.loads(self.request.recv(6969).decode('utf-8')))
-            self.request.sendall(response.encode('utf-8'))
+        data = self.request[0].strip()
+        socket = self.request[1]
+        response = wm.parse(json.loads(data.decode('utf-8')))
+        socket.sendto(response.encode('utf-8'), self.client_address)
 
-class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+class UwU(socketserver.ThreadingMixIn, socketserver.UDPServer):
     pass
 
 def main():
@@ -29,7 +30,7 @@ def main():
 
     print('1')
 
-    with ThreadedTCPServer((host, 6969), Server) as a:
+    with UwU((host, 6969), Server) as a:
         aThread = threading.Thread(target=a.serve_forever)
         aThread.daemon=True
         aThread.start()

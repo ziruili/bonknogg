@@ -20,6 +20,7 @@ batch = pyglet.graphics.Batch()
 host = sys.argv[1]
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.settimeout(0.02)
 
 token = ''.join(random.choices('0123456789abcdef', k=8))
 
@@ -36,11 +37,15 @@ options = {
 sess = requests.Session()
 
 def get():
-    tem = {}
-    for i in options:
-        tem[i]=keys[options[i]]
-    sock.sendto(json.dumps({'token': token, 'X': json.dumps(tem)}).encode('utf-8'), (host, 6969))
-    return sock.recv(20000)
+    try:
+        tem = {}
+        for i in options:
+            tem[i]=keys[options[i]]
+        sock.sendto(json.dumps({'token': token, 'X': json.dumps(tem)}).encode('utf-8'), (host, 6969))
+        return sock.recv(20000)
+    except:
+        pass
+    return ''.encode('utf-8')
 
 polygons = []
 cols = []

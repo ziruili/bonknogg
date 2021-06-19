@@ -5,7 +5,7 @@ from Box2D import *
 import time
 
 dt = 0.01369
-damp = 0.99
+damp = 0.98
 
 class World:
     def __init__(self):
@@ -67,7 +67,7 @@ class World:
         p1 = self.world.CreateDynamicBody(position=(0,7.2))
         p1f = p1.CreateFixture(
                 shape=b2CircleShape(pos=(0, 0), radius=0.2),
-                density=7.95775387622, friction=0.0, restitution=0.15
+                density=7.95775387622, friction=0.2, restitution=0.15
                 )
 
         self.players[token] = p1
@@ -131,9 +131,9 @@ class World:
             self.dashes_left[token] -= 1
             self.dash_frame[token] = 8
         else:
-            if keys["L"]:
+            if keys["L"] and p1.linearVelocity.x > -12:
                 p1.ApplyForce(force=(-10,0),point=p1.position,wake=True)
-            if keys["R"]:
+            if keys["R"] and p1.linearVelocity.x < 12:
                 p1.ApplyForce(force=(10,0),point=p1.position,wake=True)
             if keys["D"]:
                 p1.ApplyForce(force=(0,-5),point=p1.position,wake=True)

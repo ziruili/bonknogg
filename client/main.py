@@ -65,7 +65,7 @@ def update(dt):
     print(temp)
     if len(temp) == 0:
        return 
-    obj = json.loads(temp)
+    obj = json.loads(temp.decode('utf-8'))
     ptr = 0
     vs = list(map(float, obj['vs']))
 

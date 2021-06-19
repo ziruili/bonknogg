@@ -5,7 +5,7 @@ from Box2D import *
 import time
 
 dt = 0.01369
-damp = 0.98
+damp = 1
 
 class World:
     def __init__(self):
@@ -82,6 +82,12 @@ class World:
 
     def step(self):
         for token in self.players:
+            self.players[token].linearVelocity *= damp
+            self.acc[token] = self.players[token].linearVelocity.y
+        self.world.Step(dt, 5, 5)
+        for token in self.players:
+            self.acc[token] = (self.players[token].linearVelocity.y - self.acc[token]) / dt
+            
             if self.dash_frame[token] > 0:
                 p1 = self.players[token]
                 p1.linearVelocity = (0,0)
@@ -96,25 +102,18 @@ class World:
                 x = p1.linearVelocity.x
                 y = p1.linearVelocity.y
                 l2 = math.sqrt(x * x + y * y)
-                p1.linearVelocity *= 15.0 / (l2 + 1e-5)
-                p1.linearVelocity.y += 20 * dt
+                p1.linearVelocity *= 10.0 / (l2 + 1e-5)
+                if self.acc[token] <= -10 * 0.99:
+                    p1.linearVelocity.y += 25 * dt
             if self.dash_frame[token] == 0:
                 p1 = self.players[token]
                 p1.linearVelocity.x*=0.3
                 p1.linearVelocity.y*=0.3
-                self.players[token].linearVelocity *= damp
-            self.acc[token] = self.players[token].linearVelocity.y
-        self.world.Step(dt, 5, 5)
-        for token in self.players:
-            self.acc[token] = (self.players[token].linearVelocity.y - self.acc[token]) / dt
 
-            if self.acc[token] > -10 * 0.9:
+            if self.dash_frame[token] < 0 and self.acc[token] > -10 * 0.99:
                 self.dashes_left[token] = 1
 
             self.dash_frame[token] -= 1
-
-            #if self.dash_frame[token] <= 0:
-                #self.pf[token].restitution = 0.15
         time.sleep(dt)
 
     def parse(self, token, keys):
@@ -129,20 +128,22 @@ class World:
             self.dash_dir[token]['D'] = keys['D']
             self.dash_dir[token]['U'] = keys['U']
             self.dashes_left[token] -= 1
-            self.dash_frame[token] = 8
+            self.dash_frame[token] = 14
         else:
-            if keys["L"] and p1.linearVelocity.x > -4:
-                p1.ApplyForce(force=(-10,0),point=p1.position,wake=True)
-            if keys["R"] and p1.linearVelocity.x < 4:
-                p1.ApplyForce(force=(10,0),point=p1.position,wake=True)
+            if keys["L"] and p1.linearVelocity.x > -3.2:
+                p1.ApplyForce(force=(-18,0),point=p1.position,wake=True)
+            if keys["R"] and p1.linearVelocity.x < 3.2:
+                p1.ApplyForce(force=(18,0),point=p1.position,wake=True)
             if keys["D"]:
                 p1.ApplyForce(force=(0,-5),point=p1.position,wake=True)
             if keys["C"]:
-                if acc > -10 * 0.9:
+                if acc > -10 * 0.99:
                     p1.linearVelocity.y = max(p1.linearVelocity.y, 6) 
 
-                    if self.dash_frame[token] > 100000:
-                        self.pf[token].restitution = 1
+                    if self.dash_frame[token] > 0:
+                        p1.linearVelocity.x *= 1.27
+                        p1.linearVelocity.y *= 1.05
+                        self.dash_frame[token] = -1
 
         return json.dumps(self.gen_vertices(token))
 

@@ -3,7 +3,7 @@ import random
 from Box2D import *
 import time
 
-dt = 0.033
+dt = 0.016
 damp = 0.99
 
 class World:

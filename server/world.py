@@ -1,4 +1,5 @@
 import json
+import math
 import random
 from Box2D import *
 import time
@@ -83,19 +84,24 @@ class World:
         for token in self.players:
             if self.dash_frame[token] > 0:
                 p1 = self.players[token]
-                p1.linearVelocity = (0,10*dt)
+                p1.linearVelocity = (0,0)
                 if self.dash_dir[token]["L"]:
-                    p1.linearVelocity.x = min(p1.linearVelocity.y, -6.9)
+                    p1.linearVelocity.x = min(p1.linearVelocity.y, -1)
                 if self.dash_dir[token]["R"]:
-                    p1.linearVelocity.x = max(p1.linearVelocity.y, 6.9)
+                    p1.linearVelocity.x = max(p1.linearVelocity.y, 1)
                 if self.dash_dir[token]["D"]:
-                    p1.linearVelocity.y = min(p1.linearVelocity.y, -6.5)
+                    p1.linearVelocity.y = min(p1.linearVelocity.y, -1)
                 if self.dash_dir[token]["U"]:
-                    p1.linearVelocity.y = max(p1.linearVelocity.y, 7.3)
+                    p1.linearVelocity.y = max(p1.linearVelocity.y, 1)
+                x = p1.linearVelocity.x
+                y = p1.linearVelocity.y
+                l2 = math.sqrt(x * x + y * y)
+                p1.linearVelocity *= 15.0 / (l2 + 1e-5)
+                p1.linearVelocity.y += 50 * dt
             if self.dash_frame[token] == 0:
                 p1 = self.players[token]
-                p1.linearVelocity.x*=0.2
-                p1.linearVelocity.y*=0.2
+                p1.linearVelocity.x*=0.3
+                p1.linearVelocity.y*=0.3
                 self.players[token].linearVelocity *= damp
             self.acc[token] = self.players[token].linearVelocity.y
         self.world.Step(dt, 5, 5)
@@ -123,7 +129,7 @@ class World:
             self.dash_dir[token]['D'] = keys['D']
             self.dash_dir[token]['U'] = keys['U']
             self.dashes_left[token] -= 1
-            self.dash_frame[token] = 15
+            self.dash_frame[token] = 8
         else:
             if keys["L"]:
                 p1.ApplyForce(force=(-10,0),point=p1.position,wake=True)

@@ -12,7 +12,7 @@ from pyglet.gl import *
 display = pyglet.canvas.Display()
 screen = display.get_default_screen()
 
-window = pyglet.window.Window(fullscreen=True, caption='bonknogg', visible=True)
+window = pyglet.window.Window(1440, 860, caption='bonknogg', visible=True)
 keys = key.KeyStateHandler()
 window.push_handlers(keys)
 batch = pyglet.graphics.Batch()

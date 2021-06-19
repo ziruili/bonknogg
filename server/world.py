@@ -66,7 +66,7 @@ class World:
         p1 = self.world.CreateDynamicBody(position=(0,7.2))
         p1f = p1.CreateFixture(
                 shape=b2CircleShape(pos=(0, 0), radius=0.2),
-                density=7.95775387622, friction=0.0, restitution=1.0
+                density=7.95775387622, friction=0.0, restitution=0.15
                 )
 
         self.players[token] = p1
@@ -83,15 +83,20 @@ class World:
         for token in self.players:
             if self.dash_frame[token] > 0:
                 p1 = self.players[token]
+                p1.linearVelocity = (0,10*dt)
                 if self.dash_dir[token]["L"]:
-                    p1.linearVelocity.x = min(p1.linearVelocity.y, -4.2)
+                    p1.linearVelocity.x = min(p1.linearVelocity.y, -6.9)
                 if self.dash_dir[token]["R"]:
-                    p1.linearVelocity.x = max(p1.linearVelocity.y, 4.2)
+                    p1.linearVelocity.x = max(p1.linearVelocity.y, 6.9)
                 if self.dash_dir[token]["D"]:
-                    p1.linearVelocity.y = min(p1.linearVelocity.y, -3.6)
+                    p1.linearVelocity.y = min(p1.linearVelocity.y, -6.5)
                 if self.dash_dir[token]["U"]:
-                    p1.linearVelocity.y = max(p1.linearVelocity.y, 2.2)
-            self.players[token].linearVelocity *= damp
+                    p1.linearVelocity.y = max(p1.linearVelocity.y, 7.3)
+            if self.dash_frame[token] == 0:
+                p1 = self.players[token]
+                p1.linearVelocity.x*=0.2
+                p1.linearVelocity.y*=0.2
+                self.players[token].linearVelocity *= damp
             self.acc[token] = self.players[token].linearVelocity.y
         self.world.Step(dt, 5, 5)
         for token in self.players:
@@ -102,8 +107,8 @@ class World:
 
             self.dash_frame[token] -= 1
 
-            if self.dash_frame[token] <= 0:
-                self.pf[token].restitution = 0.15
+            #if self.dash_frame[token] <= 0:
+                #self.pf[token].restitution = 0.15
         time.sleep(dt)
 
     def parse(self, token, keys):
@@ -118,17 +123,17 @@ class World:
             self.dash_dir[token]['D'] = keys['D']
             self.dash_dir[token]['U'] = keys['U']
             self.dashes_left[token] -= 1
-            self.dash_frame[token] = 30
+            self.dash_frame[token] = 15
         else:
             if keys["L"]:
-                p1.ApplyForce(force=(-5,0),point=p1.position,wake=True)
+                p1.ApplyForce(force=(-10,0),point=p1.position,wake=True)
             if keys["R"]:
-                p1.ApplyForce(force=(5,0),point=p1.position,wake=True)
+                p1.ApplyForce(force=(10,0),point=p1.position,wake=True)
             if keys["D"]:
                 p1.ApplyForce(force=(0,-5),point=p1.position,wake=True)
             if keys["C"]:
                 if acc > -10 * 0.9:
-                    p1.linearVelocity.y = max(p1.linearVelocity.y, 4.2)
+                    p1.linearVelocity.y = max(p1.linearVelocity.y, 6) 
 
                     if self.dash_frame[token] > 100000:
                         self.pf[token].restitution = 1

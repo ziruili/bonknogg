@@ -25,8 +25,6 @@ def main():
     game = threading.Thread(target=main_game)
     game.start()
 
-    print('1')
-
     with socketserver.UDPServer((host, 6969), Server) as a:
         a.serve_forever()
 

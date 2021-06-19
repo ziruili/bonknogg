@@ -62,7 +62,6 @@ def update(dt):
 
     scl = 60
     temp=get()
-    print(temp)
     if len(temp) == 0:
        return 
     obj = json.loads(temp.decode('utf-8'))

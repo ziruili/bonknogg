@@ -41,7 +41,7 @@ def get():
     for i in options:
         tem[i]=keys[options[i]]
     sock.sendall(json.dumps({'token': token, 'X': json.dumps(tem)}).encode('utf-8'))
-    return sock.recv(1024)
+    return sock.recv(6969)
 
 polygons = []
 cols = []

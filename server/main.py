@@ -17,7 +17,7 @@ class Server(socketserver.BaseRequestHandler):
     def handle(self):
         #self.request.sendall("test".encode('utf-8'))
         while True:
-            response = wm.parse(json.loads(self.request.recv(1024).decode('utf-8')))
+            response = wm.parse(json.loads(self.request.recv(6969).decode('utf-8')))
             self.request.sendall(response.encode('utf-8'))
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):

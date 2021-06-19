@@ -4,7 +4,7 @@ import random
 from Box2D import *
 import time
 
-dt = 0.01369
+dt = 1/60
 damp = 1
 
 class World:
@@ -93,7 +93,7 @@ class World:
         p1 = self.world.CreateDynamicBody(position=(0,7.2))
         p1f = p1.CreateFixture(
                 shape=b2CircleShape(pos=(0, 0), radius=0.2),
-                density=7.95775387622, friction=0.2, restitution=0.3
+                density=7.95775387622, friction=0.2, restitution=0.69
                 )
         
         p1.linearDamping = 0
@@ -112,7 +112,7 @@ class World:
         for token in self.players:
             self.players[token].linearVelocity *= damp
             self.acc[token] = self.players[token].linearVelocity.y
-        self.world.Step(dt, 5, 5)
+        self.world.Step(dt, 20, 20)
         for token in self.players:
             self.acc[token] = (self.players[token].linearVelocity.y - self.acc[token]) / dt
             
@@ -133,6 +133,8 @@ class World:
                 p1.linearVelocity *= 10.0 / (l2 + 1e-5)
                 if self.acc[token] <= -10 * 0.99:
                     p1.linearVelocity.y += 25 * dt
+                else:
+                    p1.linearVelocity.y -= 25 * dt
             if self.dash_frame[token] == 0:
                 p1 = self.players[token]
                 p1.linearVelocity*=0.35
@@ -149,7 +151,7 @@ class World:
 
         p1 = self.players[token]
         acc = self.acc[token]
-        if keys['X'] and self.dashes_left[token] > 0 and self.dash_frame[token] < -0:
+        if keys['X'] and self.dashes_left[token] > 0 and self.dash_frame[token] < 0:
             self.dash_dir[token]['L'] = keys['L']
             self.dash_dir[token]['R'] = keys['R']
             self.dash_dir[token]['D'] = keys['D']

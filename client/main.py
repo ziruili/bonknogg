@@ -59,7 +59,7 @@ def update(dt):
     global polygons
     global cols
 
-    scl = 30
+    scl = 80
     temp=get()
     if len(temp) == 0:
        return 

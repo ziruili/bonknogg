@@ -47,8 +47,8 @@ class World:
 
                 sz.append(len(shape.vertices))
                 for vertex in shape.vertices:
-                    vs.append(vertex[0] + obj.position.x)
-                    vs.append(vertex[1] + obj.position.y)
+                    vs.append(f'{vertex[0] + obj.position.x:.4f}')
+                    vs.append(f'{vertex[1] + obj.position.y:.4f}')
                     vs.extend([0.2, 0.5, 0.2])
 
 
@@ -56,7 +56,7 @@ class World:
             ball = self.players[token]
 
             sz.append(0)
-            vs.extend([ball.position.x, ball.position.y, 0.2])
+            vs.extend([f'{ball.position.x:.4f}', f'{ball.position.y:.4f}', 0.2])
             vs.extend(self.cols[token])
 
         return {'sz': sz, 'vs': vs}

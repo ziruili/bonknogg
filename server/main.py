@@ -21,23 +21,14 @@ class Server(socketserver.BaseRequestHandler):
         response = wm.parse(json.loads(data.decode('utf-8')))
         socket.sendto(response.encode('utf-8'), self.client_address)
 
-class UwU(socketserver.ThreadingMixIn, socketserver.UDPServer):
-    pass
-
 def main():
     game = threading.Thread(target=main_game)
     game.start()
 
     print('1')
 
-    with UwU((host, 6969), Server) as a:
-        aThread = threading.Thread(target=a.serve_forever)
-        aThread.daemon=True
-        aThread.start()
-
-        while True:
-            time.sleep(60.0)
-
+    with socketserver.UDPServer((host, 6969), Server) as a:
+        a.serve_forever()
 
 main()
 

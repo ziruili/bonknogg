@@ -97,7 +97,7 @@ class World:
                 y = p1.linearVelocity.y
                 l2 = math.sqrt(x * x + y * y)
                 p1.linearVelocity *= 15.0 / (l2 + 1e-5)
-                p1.linearVelocity.y += 69 * dt
+                p1.linearVelocity.y += 20 * dt
             if self.dash_frame[token] == 0:
                 p1 = self.players[token]
                 p1.linearVelocity.x*=0.3
@@ -123,7 +123,7 @@ class World:
 
         p1 = self.players[token]
         acc = self.acc[token]
-        if keys['X'] and self.dashes_left[token] > 0 and self.dash_frame[token] < -10:
+        if keys['X'] and self.dashes_left[token] > 0 and self.dash_frame[token] < -30:
             self.dash_dir[token]['L'] = keys['L']
             self.dash_dir[token]['R'] = keys['R']
             self.dash_dir[token]['D'] = keys['D']
@@ -131,9 +131,9 @@ class World:
             self.dashes_left[token] -= 1
             self.dash_frame[token] = 8
         else:
-            if keys["L"] and p1.linearVelocity.x > -12:
+            if keys["L"] and p1.linearVelocity.x > -4:
                 p1.ApplyForce(force=(-10,0),point=p1.position,wake=True)
-            if keys["R"] and p1.linearVelocity.x < 12:
+            if keys["R"] and p1.linearVelocity.x < 4:
                 p1.ApplyForce(force=(10,0),point=p1.position,wake=True)
             if keys["D"]:
                 p1.ApplyForce(force=(0,-5),point=p1.position,wake=True)

@@ -2,6 +2,7 @@ import pyglet
 import numpy as np
 import pyglet.window.key as key
 import sys
+import socket
 import requests
 import json
 import random
@@ -17,6 +18,9 @@ window.push_handlers(keys)
 batch = pyglet.graphics.Batch()
 
 host = sys.argv[1]
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect((host, 6969))
 
 token = ''.join(random.choices('0123456789abcdef', k=8))
 
@@ -36,7 +40,8 @@ def get():
     tem = {}
     for i in options:
         tem[i]=keys[options[i]]
-    return sess.get(f'{host}:6969',headers={'token': token, 'X': json.dumps(tem)}).content.decode('utf-8')
+    sock.sendall({'token': token, 'X': json.dumps(tem)})
+    return socks.recv(1024)
 
 polygons = []
 cols = []

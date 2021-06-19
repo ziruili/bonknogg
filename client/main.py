@@ -20,7 +20,7 @@ batch = pyglet.graphics.Batch()
 host = sys.argv[1]
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.settimeout(0.02)
+sock.settimeout(0.1)
 
 token = ''.join(random.choices('0123456789abcdef', k=8))
 
@@ -42,7 +42,8 @@ def get():
         for i in options:
             tem[i]=keys[options[i]]
         sock.sendto(json.dumps({'token': token, 'X': json.dumps(tem)}).encode('utf-8'), (host, 6969))
-        return sock.recv(3000)
+        W = sock.recv(65535)
+        return W
     except:
         pass
     return ''.encode('utf-8')

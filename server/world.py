@@ -143,7 +143,6 @@ class World:
                 self.dashes_left[token] = 1
 
             self.dash_frame[token] -= 1
-        time.sleep(dt)
 
     def parse(self, token, keys):
         if not token in self.players:
@@ -184,6 +183,7 @@ class WorldManager:
     def step(self):
         for world in self.worlds:
             world.step()
+        time.sleep(dt)
 
     def parse(self, headers):
         keys = json.loads(headers['X'])

@@ -4,7 +4,7 @@ import random
 from Box2D import *
 import time
 
-dt = 1/30
+dt = 1/60
 damp = 1
 
 class World:

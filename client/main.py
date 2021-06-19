@@ -42,7 +42,7 @@ def get():
         for i in options:
             tem[i]=keys[options[i]]
         sock.sendto(json.dumps({'token': token, 'X': json.dumps(tem)}).encode('utf-8'), (host, 6969))
-        return sock.recv(20000)
+        return sock.recv(3000)
     except:
         pass
     return ''.encode('utf-8')
@@ -109,6 +109,6 @@ def update(dt):
         polygons.append(w)
         cols.append(c)
 
-pyglet.clock.schedule_interval(update, 1/30)
+pyglet.clock.schedule_interval(update, 1/60)
 pyglet.app.run()
 

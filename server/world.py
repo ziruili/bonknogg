@@ -97,7 +97,7 @@ class World:
                 y = p1.linearVelocity.y
                 l2 = math.sqrt(x * x + y * y)
                 p1.linearVelocity *= 15.0 / (l2 + 1e-5)
-                p1.linearVelocity.y += 50 * dt
+                p1.linearVelocity.y += 69 * dt
             if self.dash_frame[token] == 0:
                 p1 = self.players[token]
                 p1.linearVelocity.x*=0.3
@@ -123,7 +123,7 @@ class World:
 
         p1 = self.players[token]
         acc = self.acc[token]
-        if keys['X'] and self.dashes_left[token] > 0:
+        if keys['X'] and self.dashes_left[token] > 0 and self.dash_frame[token] < -10:
             self.dash_dir[token]['L'] = keys['L']
             self.dash_dir[token]['R'] = keys['R']
             self.dash_dir[token]['D'] = keys['D']

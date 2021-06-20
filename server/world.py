@@ -112,7 +112,7 @@ class World:
         for token in self.players:
             self.players[token].linearVelocity *= damp
             self.acc[token] = self.players[token].linearVelocity.y
-        self.world.Step(dt, 20, 20)
+        self.world.Step(dt, 50, 50)
         for token in self.players:
             self.acc[token] = (self.players[token].linearVelocity.y - self.acc[token]) / dt
             

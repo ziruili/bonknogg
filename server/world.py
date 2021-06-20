@@ -19,6 +19,7 @@ class World:
         self.cols = {}
         self.dp = {}
 
+        '''
         ground = self.world.CreateStaticBody(
                 position=(0,3),
                 shapes=b2PolygonShape(box=(18,0.3)),
@@ -65,6 +66,36 @@ class World:
                 shapes=b2PolygonShape(vertices=[(6, 1), (0.24, 4.24), (3, 7)]),
         )
         self.objs.append(ground)
+        '''
+        ground = self.world.CreateStaticBody(
+                position=(2980,4),
+                shapes=b2PolygonShape(box=(5,0.35)),
+        )
+        self.objs.append(ground)
+        ground = self.world.CreateStaticBody(
+                position=(3000,4),
+                shapes=b2PolygonShape(box=(5,0.35)),
+        )
+        self.objs.append(ground)
+        ground = self.world.CreateStaticBody(
+                position=(3020,4),
+                shapes=b2PolygonShape(box=(5,0.35)),
+        )
+        self.objs.append(ground)
+
+
+        ground = self.world.CreateStaticBody(
+                position=(4000,4),
+                shapes=b2PolygonShape(box=(0.05,8)),
+        )
+        self.objs.append(ground)
+        random.seed(69)
+        for i in range(22):
+            ground = self.world.CreateStaticBody(
+                    position=(4000 + (random.random() * 40 - 20),random.random() * 30 - 12),
+                    shapes=b2PolygonShape(box=(0.1,0.1)),
+            )
+            self.objs.append(ground)
         self.acc = {}
 
         # dash
@@ -103,7 +134,7 @@ class World:
 
 
     def add_player(self, token):
-        p1 = self.world.CreateDynamicBody(position=(0,7.2))
+        p1 = self.world.CreateDynamicBody(position=(4000,7.2))
         p1f = p1.CreateFixture(
                 shape=b2CircleShape(pos=(0, 0), radius=0.2),
                 density=7.95775387622, friction=0.2, restitution=0.5

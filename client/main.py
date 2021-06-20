@@ -24,7 +24,8 @@ pygame.init()
 screen = pygame.display.set_mode([1440, 860], #pygame.FULLSCREEN, 
         )
 
-host = sys.argv[1]
+host = 'localhost'
+port = 6969
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.settimeout(0.05)
@@ -51,7 +52,7 @@ def get():
             # print(i)
             tem[i]=keys[options[i]]
         # print(tem)
-        sock.sendto(json.dumps({'token': token, 'X': json.dumps(tem)}).encode('utf-8'), (host, 6969))
+        sock.sendto(json.dumps({'token': token, 'X': json.dumps(tem)}).encode('utf-8'), (host, port))
         W = sock.recvfrom(65535)[0]
         return W
     except:
@@ -124,6 +125,8 @@ def update(dt):
         cols.append(c)
 
 def game():
+    print(host)
+    print(port)
     running = True
     while running:
         for event in pygame.event.get():
@@ -147,11 +150,14 @@ width, height = pygame.display.get_surface().get_size()
 menu = pygame_menu.Menu(width=width, height=height, title='Bonknogg', theme=pygame_menu.themes.THEME_DARK)
 game_menu = pygame_menu.Menu(width=width, height=height, title='Join', theme=pygame_menu.themes.THEME_DARK)
 rules_menu = pygame_menu.Menu(width=width, height=height, title='about', theme=pygame_menu.themes.THEME_DARK)
-menu.add.text_input('Name :', default='n00bmaster69')
+
+menu.add.text_input('Name : ', default='n00bmaster69')
 menu.add.button('Play', game_menu)
 menu.add.button('Game Rules', rules_menu)
 menu.add.button('Quit', pygame_menu.events.EXIT)
 
+game_menu.add.text_input('Host : ', default='localhost', onreturn=lambda x:globals().update(host=x))
+game_menu.add.text_input('Port : ', default='6969', onreturn=lambda x:globals().update(port=int(x)))
 game_menu.add.button('Start', game)
 game_menu.add.button('Back', pygame_menu.events.BACK)
 

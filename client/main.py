@@ -37,16 +37,12 @@ options = {
 sess = requests.Session()
 
 def get():
-    try:
-        tem = {}
-        for i in options:
-            tem[i]=keys[options[i]]
-        sock.sendto(json.dumps({'token': token, 'X': json.dumps(tem)}).encode('utf-8'), (host, 6969))
-        W = sock.recv(65535)
-        return W
-    except:
-        pass
-    return ''.encode('utf-8')
+    tem = {}
+    for i in options:
+        tem[i]=keys[options[i]]
+    sock.sendto(json.dumps({'token': token, 'X': json.dumps(tem)}).encode('utf-8'), (host, 6969))
+    W = sock.recvfrom(65535)[0]
+    return W
 
 polygons = []
 cols = []

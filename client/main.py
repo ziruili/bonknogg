@@ -127,8 +127,7 @@ def update(dt):
         cols.append(c)
 
 def game():
-    print(host)
-    print(port)
+    print(host, port, room)
     running = True
     while running:
         for event in pygame.event.get():

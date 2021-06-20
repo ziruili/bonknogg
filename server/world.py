@@ -71,6 +71,8 @@ class World:
         self.dash_dir = {}
 
     def gen_vertices(self, token):
+        print(token)
+        p1 = self.players[token]
         sz = [self.dashes_left[token]]
         vs = []
         for obj in self.objs:
@@ -79,17 +81,19 @@ class World:
 
                 sz.append(len(shape.vertices))
                 for vertex in shape.vertices:
-                    vs.append(f'{vertex[0] + obj.position.x:.4f}')
+                    vs.append(f'{vertex[0] + obj.position.x - p1.position.x:.4f}')
                     vs.append(f'{vertex[1] + obj.position.y:.4f}')
-                    vs.extend([255 * 0.2, 255 * 0.5, 255 * 0.2])
+                    vs.extend([51, 127, 51])
 
 
-        for token in self.players:
-            ball = self.players[token]
+        for tmptoken in self.players:
+            print(tmptoken)
+            ball = self.players[tmptoken]
 
             sz.append(0)
-            vs.extend([f'{ball.position.x:.4f}', f'{ball.position.y:.4f}', 0.2])
-            vs.extend(self.cols[token])
+            vs.extend([f'{ball.position.x - p1.position.x:.4f}', f'{ball.position.y:.4f}', 0.2])
+            vs.extend(self.cols[tmptoken])
+        print(vs)
 
         return {'sz': sz, 'vs': vs}
 
@@ -98,14 +102,14 @@ class World:
         p1 = self.world.CreateDynamicBody(position=(0,7.2))
         p1f = p1.CreateFixture(
                 shape=b2CircleShape(pos=(0, 0), radius=0.2),
-                density=7.95775387622, friction=0.2, restitution=0.69
+                density=7.95775387622, friction=0.2, restitution=0.5
                 )
         
         p1.linearDamping = 0
 
         self.players[token] = p1
         self.acc[token] = 0
-        self.cols[token] = [255 * random.random(), 255 * random.random(), 255 * random.random()]
+        self.cols[token] = [int(255 * random.random()), int(255 * random.random()), int(255 * random.random())]
 
         # dash
         self.dashes_left[token] = 1
@@ -123,6 +127,7 @@ class World:
             
             if self.dash_frame[token] > 0:
                 p1 = self.players[token]
+                Tempx,Tempy = p1.linearVelocity
                 p1.linearVelocity = (0,0)
                 if self.dash_dir[token]["L"]:
                     p1.linearVelocity.x = min(p1.linearVelocity.y, -1)
@@ -136,7 +141,9 @@ class World:
                 y = p1.linearVelocity.y
                 l2 = math.sqrt(x * x + y * y)
                 p1.linearVelocity *= 10.0 / (l2 + 1e-5)
-                if self.acc[token] <= -10 * 0.99:
+                if p1.linearVelocity == (0,0):
+                    p1.linearVelocity = (Tempx,Tempy)
+                elif self.acc[token] <= -10 * 0.99:
                     p1.linearVelocity.y += 20 * dt
                 else:
                     p1.linearVelocity.y -= 50 * dt

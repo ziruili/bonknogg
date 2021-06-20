@@ -16,7 +16,6 @@ clock = pygame.time.Clock()
 #screen = display.get_default_screen()
 
 #window = pyglet.window.Window(1440, 860, caption='bonknogg', visible=True)
-keys = key.KeyStateHandler()
 #window.push_handlers(keys)
 #batch = pyglet.graphics.Batch()
 
@@ -32,22 +31,25 @@ sock.settimeout(0.05)
 token = ''.join(random.choices('0123456789abcdef', k=8))
 
 options = {
-    "U":key.UP,
-    "D":key.DOWN,
-    "L":key.LEFT,
-    "R":key.RIGHT,
-    "X":key.X,
-    "C":key.C,
-    "Z":key.Z
+    "U":pygame.K_UP,
+    "D":pygame.K_DOWN,
+    "L":pygame.K_LEFT,
+    "R":pygame.K_RIGHT,
+    "X":pygame.K_x,
+    "C":pygame.K_c,
+    "Z":pygame.K_z
 }
 
 sess = requests.Session()
 
 def get():
     try:
+        keys = pygame.key.get_pressed()
         tem = {}
         for i in options:
+            print(i)
             tem[i]=keys[options[i]]
+        print(tem)
         sock.sendto(json.dumps({'token': token, 'X': json.dumps(tem)}).encode('utf-8'), (host, 6969))
         W = sock.recvfrom(65535)[0]
         return W
@@ -137,7 +139,7 @@ while running:
         print(cols[i])
         print(p)
         pygame.draw.polygon(surface=screen, color=cols[i], points=p)
-    screen.blit(pygame.transform.flip(screen,True,True),(0,0))
+    screen.blit(pygame.transform.flip(screen,False,True),(0,0))
     pygame.display.flip()
     clock.tick(60)
 #pyglet.clock.schedule_interval(update, 1/60)

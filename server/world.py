@@ -66,6 +66,7 @@ class World:
 
         # dash
         self.dashes_left = {}
+        self.mana = {}
         self.pf = {}
         self.dash_frame = {}
         self.dash_dir = {}
@@ -113,6 +114,7 @@ class World:
 
         # dash
         self.dashes_left[token] = 1
+        self.mana[token] = 0
         self.pf[token] = p1f
         self.dash_frame[token] = 0
         self.dash_dir[token] = {}
@@ -168,7 +170,22 @@ class World:
             self.dash_dir[token]['D'] = keys['D']
             self.dash_dir[token]['U'] = keys['U']
             self.dashes_left[token] -= 1
+            if self.mana[token] < 15:
+                self.mana[token] += 1
             self.dash_frame[token] = 14
+        elif keys['Z'] and self.mana[token] >=5:
+            print("\n\n\n\n\n\n\n\n\n\n\n")
+            for tmptoken in self.players:
+                if tmptoken == token:
+                    continue
+                p2 = self.players[tmptoken]
+                x = p2.position.x-p1.position.x
+                y = p2.position.y-p1.position.y
+                dist = math.sqrt(x*x+y*y)
+                print(dist)
+                p2.ApplyForce(force=(500*x/(dist*dist),500*y/(dist*dist)),point=p2.position,wake=True)
+
+            self.mana[token]-=3
         else:
             if keys["L"] and p1.linearVelocity.x > -3.2:
                 p1.ApplyForce(force=(-18,0),point=p1.position,wake=True)

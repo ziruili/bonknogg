@@ -8,6 +8,7 @@ import json
 import random
 import string
 import pygame
+import pygame_menu
 from pygame.locals import *
 clock = pygame.time.Clock()
 #from pyglet.gl import *
@@ -122,24 +123,39 @@ def update(dt):
         polygons.append(w)
         cols.append(c)
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+def game():
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-    update(1/60)
-    screen.fill((0, 0, 0))
-    for i, p in enumerate(polygons):
-        #c = cols[i]
-        #pyglet.graphics.draw(len(p) // 2, GL_POLYGON,
-            #('v2f', p), ('c3f', c):w
+        update(1/60)
+        screen.fill((0, 0, 0))
+        for i, p in enumerate(polygons):
+            #c = cols[i]
+            #pyglet.graphics.draw(len(p) // 2, GL_POLYGON,
+                #('v2f', p), ('c3f', c):w
 
-        #)
-        pygame.draw.polygon(surface=screen, color=cols[i], points=p)
-    screen.blit(pygame.transform.flip(screen,False,True),(0,0))
-    pygame.display.flip()
-    clock.tick(60)
+            #)
+            pygame.draw.polygon(surface=screen, color=cols[i], points=p)
+        screen.blit(pygame.transform.flip(screen,False,True),(0,0))
+        pygame.display.flip()
+        clock.tick(60)
+
+width, height = pygame.display.get_surface().get_size()
+menu = pygame_menu.Menu(width=width, height=height, title='Bonknogg', theme=pygame_menu.themes.THEME_DARK)
+game_menu = pygame_menu.Menu(width=width, height=height, title='Join', theme=pygame_menu.themes.THEME_DARK)
+rules_menu = pygame_menu.Menu(width=width, height=height, title='about', theme=pygame_menu.themes.THEME_DARK)
+menu.add.text_input('Name :', default='n00bmaster69')
+menu.add.button('Play', game_menu)
+menu.add.button('Game Rules', rules_menu)
+menu.add.button('Quit', pygame_menu.events.EXIT)
+
+game_menu.add.button('Start', game)
+game_menu.add.button('Back', pygame_menu.events.BACK)
+
+rules_menu.add.button('Back', pygame_menu.events.BACK)
+menu.mainloop(screen)
 #pyglet.clock.schedule_interval(update, 1/60)
 #pyglet.app.run()
-

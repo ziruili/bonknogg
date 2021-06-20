@@ -171,7 +171,7 @@ class World:
 
         p1 = self.players[token]
         acc = self.acc[token]
-        if keys['X'] and self.dashes_left[token] > 0 and self.dash_frame[token] < 0:
+        if keys['X'] and self.dashes_left[token] > 0 and self.dash_frame[token] < -15:
             self.dash_dir[token]['L'] = keys['L']
             self.dash_dir[token]['R'] = keys['R']
             self.dash_dir[token]['D'] = keys['D']
@@ -181,6 +181,7 @@ class World:
                 self.mana[token] += 1
             self.dash_frame[token] = 14
         elif keys['Z'] and self.mana[token] >= 3:
+            p1.linearVelocity = (0,0)
             # print("\n\n\n\n\n\n\n\n\n\n\n")
             for tmptoken in self.players:
                 if tmptoken == token:

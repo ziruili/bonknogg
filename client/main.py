@@ -157,9 +157,9 @@ menu.add.button('Play', game_menu)
 menu.add.button('Game Rules', rules_menu)
 menu.add.button('Quit', pygame_menu.events.EXIT)
 
-game_menu.add.text_input('Host : ', default='localhost', onreturn=lambda x:globals().update(host=x))
-game_menu.add.text_input('Port : ', default='6969', onreturn=lambda x:globals().update(port=int(x)))
-game_menu.add.text_input('Room : ', default='1234', onreturn=lambda x:globals().update(room=x))
+game_menu.add.text_input('Host : ', default='localhost', onchange=lambda x:globals().update(host=x))
+game_menu.add.text_input('Port : ', default='6969', onchange=lambda x:globals().update(port=int(x)))
+game_menu.add.text_input('Room : ', default='1234', onchange=lambda x:globals().update(room=x))
 items=[('Beginner', 0),
         ('Apprentice', 1),
         ('Knight', 2),

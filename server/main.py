@@ -5,7 +5,7 @@ import sys
 import json
 from server.world import WorldManager
 
-host = sys.argv[1]
+host = '0'#sys.argv[1]
 
 wm = WorldManager()
 

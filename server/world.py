@@ -23,20 +23,25 @@ class World:
         self.objs.append(ground)
         ground = self.world.CreateStaticBody(
                 position=(0,1),
-                shapes=b2PolygonShape(box=(20,0.2)),
+                shapes=b2PolygonShape(box=(20,0.35)),
         )
         self.objs.append(ground)
         ground = self.world.CreateStaticBody(
                 position=(-5,4.2),
-                shapes=b2PolygonShape(box=(2,0.1)),
+                shapes=b2PolygonShape(box=(2,0.35)),
         )
         self.objs.append(ground)
         ground = self.world.CreateStaticBody(
                 position=(5,4.2),
-                shapes=b2PolygonShape(box=(2,0.1)),
+                shapes=b2PolygonShape(box=(2,0.35)),
         )
         self.objs.append(ground)
 
+        ground = self.world.CreateStaticBody(
+                position=(0,1),
+                shapes=b2PolygonShape(box=(0.1,3)),
+        )
+        self.objs.append(ground)
         ground = self.world.CreateStaticBody(
                 position=(-21,5),
                 shapes=b2PolygonShape(box=(0.22,7)),
@@ -132,9 +137,9 @@ class World:
                 l2 = math.sqrt(x * x + y * y)
                 p1.linearVelocity *= 10.0 / (l2 + 1e-5)
                 if self.acc[token] <= -10 * 0.99:
-                    p1.linearVelocity.y += 25 * dt
+                    p1.linearVelocity.y += 20 * dt
                 else:
-                    p1.linearVelocity.y -= 25 * dt
+                    p1.linearVelocity.y -= 50 * dt
             if self.dash_frame[token] == 0:
                 p1 = self.players[token]
                 p1.linearVelocity*=0.35
@@ -163,14 +168,14 @@ class World:
             if keys["R"] and p1.linearVelocity.x < 3.2:
                 p1.ApplyForce(force=(18,0),point=p1.position,wake=True)
             if keys["D"]:
-                p1.ApplyForce(force=(0,-5),point=p1.position,wake=True)
+                p1.ApplyForce(force=(0,-12),point=p1.position,wake=True)
             if keys["C"]:
                 if acc > -10 * 0.99:
                     p1.linearVelocity.y = max(p1.linearVelocity.y, 6) 
 
                     if self.dash_frame[token] > 0:
                         p1.linearVelocity.x *= 1.79234
-                        p1.linearVelocity.y *= 1.5411239
+                        p1.linearVelocity.y *= 1.4311239
                         self.dash_frame[token] = -1
                         self.dashes_left[token] = 1
 

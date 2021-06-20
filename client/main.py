@@ -26,6 +26,8 @@ screen = pygame.display.set_mode([1440, 860], #pygame.FULLSCREEN,
 
 host = 'localhost'
 port = 6969
+room = 0
+difficulty = 0
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.settimeout(0.05)
@@ -158,8 +160,15 @@ menu.add.button('Quit', pygame_menu.events.EXIT)
 
 game_menu.add.text_input('Host : ', default='localhost', onreturn=lambda x:globals().update(host=x))
 game_menu.add.text_input('Port : ', default='6969', onreturn=lambda x:globals().update(port=int(x)))
+game_menu.add.text_input('Room : ', default='0', onreturn=lambda x:globals().update(room=x))
+items=[('Beginner', 0),
+        ('Apprentice', 1),
+        ('Knight', 2),
+        ('Master', 3),
+        ('Sage', 4)]
+game_menu.add.selector('Difficulty: ', items=items)
 game_menu.add.button('Start', game)
-game_menu.add.button('Back', pygame_menu.events.BACK)
+game_menu.add.button('Back', pygame_menu.events.BACK, onchange=lambda x,y:globals().update(difficulty=y))
 
 rules_menu.add.button('Back', pygame_menu.events.BACK)
 menu.mainloop(screen)

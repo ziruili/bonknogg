@@ -2,10 +2,12 @@ import json
 import math
 import random
 from Box2D import *
+import copy
 import time
 
 dt = 1/60
 damp = 1
+E = 0.01
 
 class World:
     def __init__(self):
@@ -15,6 +17,7 @@ class World:
 
         self.objs = []
         self.cols = {}
+        self.dp = {}
 
         ground = self.world.CreateStaticBody(
                 position=(0,3),
@@ -72,8 +75,8 @@ class World:
         self.dash_dir = {}
 
     def gen_vertices(self, token):
-        print(token)
-        p1 = self.players[token]
+        # print(token)
+        dpe = self.dp[token]
         sz = [self.dashes_left[token]]
         vs = []
         for obj in self.objs:
@@ -82,19 +85,19 @@ class World:
 
                 sz.append(len(shape.vertices))
                 for vertex in shape.vertices:
-                    vs.append(f'{vertex[0] + obj.position.x - p1.position.x:.4f}')
-                    vs.append(f'{vertex[1] + obj.position.y:.4f}')
+                    vs.append(f'{vertex[0] + obj.position.x - dpe[0]:.4f}')
+                    vs.append(f'{vertex[1] + obj.position.y - dpe[1] + 5:.4f}')
                     vs.extend([51, 127, 51])
 
 
         for tmptoken in self.players:
-            print(tmptoken)
+            # print(tmptoken)
             ball = self.players[tmptoken]
 
             sz.append(0)
-            vs.extend([f'{ball.position.x - p1.position.x:.4f}', f'{ball.position.y:.4f}', 0.2])
+            vs.extend([f'{ball.position.x - dpe[0]:.4f}', f'{ball.position.y - dpe[1] + 5:.4f}', 0.2])
             vs.extend(self.cols[tmptoken])
-        print(vs)
+        # print(vs)
 
         return {'sz': sz, 'vs': vs}
 
@@ -109,6 +112,7 @@ class World:
         p1.linearDamping = 0
 
         self.players[token] = p1
+        self.dp[token] = [p1.position.x, p1.position.y]
         self.acc[token] = 0
         self.cols[token] = [int(255 * random.random()), int(255 * random.random()), int(255 * random.random())]
 
@@ -123,6 +127,9 @@ class World:
         for token in self.players:
             self.players[token].linearVelocity *= damp
             self.acc[token] = self.players[token].linearVelocity.y
+
+            self.dp[token][0] += E * (self.players[token].position.x - self.dp[token][0]) ** 3
+            self.dp[token][1] += E * (self.players[token].position.y - self.dp[token][1]) ** 3
         self.world.Step(dt, 50, 50)
         for token in self.players:
             self.acc[token] = (self.players[token].linearVelocity.y - self.acc[token]) / dt
@@ -173,8 +180,8 @@ class World:
             if self.mana[token] < 15:
                 self.mana[token] += 1
             self.dash_frame[token] = 14
-        elif keys['Z'] and self.mana[token] >=5:
-            print("\n\n\n\n\n\n\n\n\n\n\n")
+        elif keys['Z'] and self.mana[token] >= 3:
+            # print("\n\n\n\n\n\n\n\n\n\n\n")
             for tmptoken in self.players:
                 if tmptoken == token:
                     continue
@@ -182,7 +189,7 @@ class World:
                 x = p2.position.x-p1.position.x
                 y = p2.position.y-p1.position.y
                 dist = math.sqrt(x*x+y*y)
-                print(dist)
+                # print(dist)
                 p2.ApplyForce(force=(500*x/(dist*dist),500*y/(dist*dist)),point=p2.position,wake=True)
 
             self.mana[token]-=3

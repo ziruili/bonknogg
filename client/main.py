@@ -47,9 +47,9 @@ def get():
         keys = pygame.key.get_pressed()
         tem = {}
         for i in options:
-            print(i)
+            # print(i)
             tem[i]=keys[options[i]]
-        print(tem)
+        # print(tem)
         sock.sendto(json.dumps({'token': token, 'X': json.dumps(tem)}).encode('utf-8'), (host, 6969))
         W = sock.recvfrom(65535)[0]
         return W
@@ -82,7 +82,7 @@ def update(dt):
     obj = json.loads(temp.decode('utf-8'))
     ptr = 0
     vs = list(map(float, obj['vs']))
-    print(vs)
+    # print(vs)
 
     polygons = []
     cols = []
@@ -136,8 +136,6 @@ while running:
             #('v2f', p), ('c3f', c):w
 
         #)
-        print(cols[i])
-        print(p)
         pygame.draw.polygon(surface=screen, color=cols[i], points=p)
     screen.blit(pygame.transform.flip(screen,False,True),(0,0))
     pygame.display.flip()

@@ -26,7 +26,7 @@ screen = pygame.display.set_mode([1440, 860], #pygame.FULLSCREEN,
 
 host = 'localhost'
 port = 6969
-room = 0
+room = '1234'
 difficulty = 0
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -54,7 +54,7 @@ def get():
             # print(i)
             tem[i]=keys[options[i]]
         # print(tem)
-        sock.sendto(json.dumps({'token': token, 'X': json.dumps(tem)}).encode('utf-8'), (host, port))
+        sock.sendto(json.dumps({'room': room, 'token': token, 'X': json.dumps(tem)}).encode('utf-8'), (host, port))
         W = sock.recvfrom(65535)[0]
         return W
     except:
@@ -160,7 +160,7 @@ menu.add.button('Quit', pygame_menu.events.EXIT)
 
 game_menu.add.text_input('Host : ', default='localhost', onreturn=lambda x:globals().update(host=x))
 game_menu.add.text_input('Port : ', default='6969', onreturn=lambda x:globals().update(port=int(x)))
-game_menu.add.text_input('Room : ', default='0', onreturn=lambda x:globals().update(room=x))
+game_menu.add.text_input('Room : ', default='1234', onreturn=lambda x:globals().update(room=x))
 items=[('Beginner', 0),
         ('Apprentice', 1),
         ('Knight', 2),
@@ -168,7 +168,7 @@ items=[('Beginner', 0),
         ('Sage', 4)]
 game_menu.add.selector('Difficulty: ', items=items)
 game_menu.add.button('Start', game)
-game_menu.add.button('Back', pygame_menu.events.BACK, onchange=lambda x,y:globals().update(difficulty=y))
+game_menu.add.button('Back', pygame_menu.events.BACK, onchange=lambda x,y:globals().update(difficulty=y), accept_kwargs=True)
 
 rules_menu.add.button('Back', pygame_menu.events.BACK)
 menu.mainloop(screen)

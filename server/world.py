@@ -215,17 +215,20 @@ class World:
 
 class WorldManager:
     def __init__(self):
-        self.worlds = [World()]
+        self.worlds = {}
 
     def step(self):
-        for world in self.worlds:
-            world.step()
+        for m in self.worlds:
+            self.worlds[m].step()
         time.sleep(dt)
 
     def parse(self, headers):
+        room = headers['room']
+        if room not in self.worlds:
+            self.worlds[room] = World()
         keys = json.loads(headers['X'])
         # TODO: choose a world
         # right now, every client that connects share a world
-        return self.worlds[0].parse(headers['token'], keys)
+        return self.worlds[room].parse(headers['token'], keys)
 
 

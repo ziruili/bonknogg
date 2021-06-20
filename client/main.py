@@ -127,7 +127,7 @@ while running:
             running = False
 
     update(1/60)
-    screen.fill((255,255,255))
+    screen.fill((0, 0, 0))
     for i, p in enumerate(polygons):
         #c = cols[i]
         #pyglet.graphics.draw(len(p) // 2, GL_POLYGON,
@@ -137,7 +137,7 @@ while running:
         print(cols[i])
         print(p)
         pygame.draw.polygon(surface=screen, color=cols[i], points=p)
-    screen.blit(pygame.transform.flip(screen,True,False),(0,0))
+    screen.blit(pygame.transform.flip(screen,True,True),(0,0))
     pygame.display.flip()
     clock.tick(60)
 #pyglet.clock.schedule_interval(update, 1/60)

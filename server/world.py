@@ -81,7 +81,7 @@ class World:
                 for vertex in shape.vertices:
                     vs.append(f'{vertex[0] + obj.position.x:.4f}')
                     vs.append(f'{vertex[1] + obj.position.y:.4f}')
-                    vs.extend([0.2, 0.5, 0.2])
+                    vs.extend([255 * 0.2, 255 * 0.5, 255 * 0.2])
 
 
         for token in self.players:
@@ -105,7 +105,7 @@ class World:
 
         self.players[token] = p1
         self.acc[token] = 0
-        self.cols[token] = [random.random() + 0.3, random.random() + 0.3, random.random() + 0.3]
+        self.cols[token] = [255 * random.random(), 255 * random.random(), 255 * random.random()]
 
         # dash
         self.dashes_left[token] = 1

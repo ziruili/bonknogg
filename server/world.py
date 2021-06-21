@@ -18,6 +18,7 @@ class World:
         self.objs = []
         self.cols = {}
         self.dp = {}
+        self.shock_cooldown = {}
 
         random.seed(69)
 
@@ -104,7 +105,7 @@ class World:
         self.dash_frame = {}
         self.dash_dir = {}
 
-    def gen_vertices(self, token):
+    def gen_vertices(self, token, difficulty):
         # print(token)
         dpe = self.dp[token]
         sz = [self.dashes_left[token]]
@@ -117,7 +118,8 @@ class World:
                 for vertex in shape.vertices:
                     vs.append(f'{vertex[0] + obj.position.x - dpe[0]:.4f}')
                     vs.append(f'{vertex[1] + obj.position.y - dpe[1] + 5:.4f}')
-                    vs.extend([51, 127, 51])
+                    nordcolours=[[191, 97, 106],[208, 135, 112],[235, 203, 139],[163, 190, 140],[180, 142, 173]]
+                    vs.extend(nordcolours[difficulty])
 
 
         for tmptoken in self.players:
@@ -129,7 +131,9 @@ class World:
             vs.extend(self.cols[tmptoken])
         # print(vs)
 
-        return {'sz': sz, 'vs': vs, 'rn': self.players[token].position.y>=-20}
+        return {'sz': sz, 'vs': vs, 'rn': self.players[token].position.y>=-20, 'mn': self.mana[token]}
+    #These variables are unreadable, but they are sent over the connection
+    #Each byte counts, so the shorter the variable names the better
 
 
     def add_player(self, token, difficulty, colour):
@@ -152,6 +156,7 @@ class World:
         self.pf[token] = p1f
         self.dash_frame[token] = 0
         self.dash_dir[token] = {}
+        self.shock_cooldown[token] = 0
 
     def step(self):
         for token in self.players:
@@ -164,6 +169,8 @@ class World:
         for token in self.players:
             self.acc[token] = (self.players[token].linearVelocity.y - self.acc[token]) / dt
             
+            if self.shock_cooldown[token] > 0:
+                self.shock_cooldown[token] -= 1
             if self.dash_frame[token] > 0:
                 p1 = self.players[token]
                 Tempx,Tempy = p1.linearVelocity
@@ -207,10 +214,10 @@ class World:
             self.dash_dir[token]['D'] = keys['D']
             self.dash_dir[token]['U'] = keys['U']
             self.dashes_left[token] -= 1
-            if self.mana[token] < 15:
+            if self.mana[token] < 9:
                 self.mana[token] += 1
             self.dash_frame[token] = 14
-        elif keys['Z'] and self.mana[token] >= 3:
+        elif keys['Z'] and self.mana[token] >= 3 and self.shock_cooldown[token] == 0:
             p1.linearVelocity = (0,0)
             # print("\n\n\n\n\n\n\n\n\n\n\n")
             for tmptoken in self.players:
@@ -224,6 +231,7 @@ class World:
                 p2.ApplyForce(force=(500*x/(dist*dist),500*y/(dist*dist)),point=p2.position,wake=True)
 
             self.mana[token]-=3
+            self.shock_cooldown[token]=20
         else:
             if keys["L"] and p1.linearVelocity.x > -3.2:
                 p1.ApplyForce(force=(-18,0),point=p1.position,wake=True)
@@ -241,7 +249,7 @@ class World:
                         self.dash_frame[token] = -1
                         self.dashes_left[token] = 1
 
-        return json.dumps(self.gen_vertices(token))
+        return json.dumps(self.gen_vertices(token, difficulty))
 
 class WorldManager:
     def __init__(self):

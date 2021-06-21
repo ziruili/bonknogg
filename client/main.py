@@ -12,6 +12,7 @@ import pygame_menu
 import time
 import datetime
 from pygame.locals import *
+import pygame.freetype
 clock = pygame.time.Clock()
 #from pyglet.gl import *
 
@@ -23,16 +24,22 @@ clock = pygame.time.Clock()
 #batch = pyglet.graphics.Batch()
 
 pygame.init()
+pygame.font.init()
+myfont = pygame.freetype.Font('FiraCode-Regular.ttf', 40)
+#myfont = pygame.font.SysFont('Comic Sans MS', 30)
 screen = pygame.display.set_mode([1440, 860], #pygame.FULLSCREEN, 
         )
 
 name = 'n00bmaster69'
-colour = (int(255 * random.random()),int(255 * random.random()),int(255 * random.random()))
+nordcolours = [(216, 222, 233),(143, 188, 187),(136, 192, 208),(129, 161, 193),(94, 129, 172)]
+#colour = (int(255 * random.random()),int(255 * random.random()),int(255 * random.random()))
+colour = random.choice(nordcolours)
 host = 'localhost'
 port = 6969
 room = '1234'
 difficulty = 0
 ohno = False
+mana = 0
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.settimeout(0.05)
@@ -82,6 +89,7 @@ cols = []
 def update(dt):
     global polygons
     global cols
+    global mana
 
     scl = 80
     temp=get()
@@ -97,6 +105,8 @@ def update(dt):
 
     polygons = []
     cols = []
+    mana = obj['mn']
+
     if obj['rn'] == False:
         # print("test")
         return
@@ -104,13 +114,6 @@ def update(dt):
     dashes = int(obj['sz'][0])
 
     width, height = pygame.display.get_surface().get_size()
-    polygons.append([(0, height - 50), (0, height), (width, height), (width, height - 50)])
-    if dashes == 0:
-        cols.append((127, 255, 255))
-    elif dashes == 1:
-        cols.append((230, 51, 51))
-    else:
-        cols.append((230, 153, 255))
 
     for s in obj['sz'][1:]:
         sz = int(s)
@@ -135,6 +138,10 @@ def update(dt):
             c=tuple(vs[ptr + 2:ptr + 5])
         polygons.append(w)
         cols.append(c)
+    
+    if dashes == 1:
+        polygons.append([(0, height - 30), (0, height), (width, height), (width, height - 30)])
+        cols.append((colour))
 
 def gameHackySolu():
     game()
@@ -145,10 +152,15 @@ def cursed():
     flag=False
 
 width, height = pygame.display.get_surface().get_size()
-menu = pygame_menu.Menu(width=width, height=height, title='Bonknogg', theme=pygame_menu.themes.THEME_DARK)
-game_menu = pygame_menu.Menu(width=width, height=height, title='Join', theme=pygame_menu.themes.THEME_DARK)
-rules_menu = pygame_menu.Menu(width=width, height=height, title='about', theme=pygame_menu.themes.THEME_DARK)
-certificate = pygame_menu.Menu(width=width, height=height, title='Rippus', theme=pygame_menu.themes.THEME_DARK)
+mytheme = pygame_menu.Theme(background_color=(46, 52, 64),
+    title_background_color=(59, 66, 82),
+    widget_font_color=(229, 233, 240)
+    )
+
+menu = pygame_menu.Menu(width=width, height=height, title='Bonknogg', theme=mytheme)
+game_menu = pygame_menu.Menu(width=width, height=height, title='Join', theme=mytheme)
+rules_menu = pygame_menu.Menu(width=width, height=height, title='Rules', theme=mytheme)
+certificate = pygame_menu.Menu(width=width, height=height, title='Certificate', theme=mytheme)
 
 menu.add.text_input('Name : ', default='n00bmaster69', onchange=lambda x:globals().update(name=x))
 menu.add.color_input('Colour : ', color_type='rgb', default=colour, onchange=lambda x:globals().update(colour=x))
@@ -190,7 +202,7 @@ def game():
                 running = False
 
         update(1/60)
-        screen.fill((44, 45, 40))
+        screen.fill((46, 52, 64))
         if polygons == []:
             token = ''.join(random.choices('0123456789abcdef', k=8))
             #certificate.mainloop(screen)
@@ -204,8 +216,8 @@ def game():
                 end = time.time()
                 print(end-start)
                 certificate.clear()
-                certificate.add.label(name)
-                certificate.add.label(str(datetime.timedelta(seconds=int(end-start))))
+                certificate.add.label("Congratulations, " + name)
+                certificate.add.label("You survived: " + str(datetime.timedelta(seconds=int(end-start))))
             certificate.add.button('Back', cursed)
             while flag:
                 certificate.draw(screen)
@@ -220,9 +232,11 @@ def game():
             #)
             pygame.draw.polygon(surface=screen, color=cols[i], points=p)
         screen.blit(pygame.transform.flip(screen,False,True),(0,0))
+        if mana != 0:
+            myfont.render_to(screen, (width/2 - 5, 50), str(mana), colour)
         pygame.display.flip()
         clock.tick(60)
 
 menu.mainloop(screen)
 #pyglet.clock.schedule_interval(update, 1/60)
-#pyglet.app.run()
+pyglet.app.run()

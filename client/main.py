@@ -9,6 +9,8 @@ import random
 import string
 import pygame
 import pygame_menu
+import time
+import datetime
 from pygame.locals import *
 clock = pygame.time.Clock()
 #from pyglet.gl import *
@@ -24,10 +26,13 @@ pygame.init()
 screen = pygame.display.set_mode([1440, 860], #pygame.FULLSCREEN, 
         )
 
+name = 'n00bmaster69'
+colour = (int(255 * random.random()),int(255 * random.random()),int(255 * random.random()))
 host = 'localhost'
 port = 6969
 room = '1234'
 difficulty = 0
+ohno = False
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.settimeout(0.05)
@@ -45,7 +50,7 @@ options = {
 }
 
 sess = requests.Session()
-
+'n00bmaster69'
 def get():
     try:
         keys = pygame.key.get_pressed()
@@ -54,7 +59,7 @@ def get():
             # print(i)
             tem[i]=keys[options[i]]
         # print(tem)
-        sock.sendto(json.dumps({'room': room, 'token': token, 'X': json.dumps(tem)}).encode('utf-8'), (host, port))
+        sock.sendto(json.dumps({'room': room, 'token': token, 'difficulty': difficulty, 'colour': colour, 'X': json.dumps(tem)}).encode('utf-8'), (host, port))
         W = sock.recvfrom(65535)[0]
         return W
     except:
@@ -82,6 +87,8 @@ def update(dt):
     temp=get()
     if len(temp) == 0:
         print("ohno")
+        global ohno
+        ohno=True
         return 
     obj = json.loads(temp.decode('utf-8'))
     ptr = 0
@@ -90,6 +97,9 @@ def update(dt):
 
     polygons = []
     cols = []
+    if obj['rn'] == False:
+        # print("test")
+        return
 
     dashes = int(obj['sz'][0])
 
@@ -126,16 +136,82 @@ def update(dt):
         polygons.append(w)
         cols.append(c)
 
+def gameHackySolu():
+    game()
+
+flag=True
+def cursed():
+    global flag
+    flag=False
+
+width, height = pygame.display.get_surface().get_size()
+menu = pygame_menu.Menu(width=width, height=height, title='Bonknogg', theme=pygame_menu.themes.THEME_DARK)
+game_menu = pygame_menu.Menu(width=width, height=height, title='Join', theme=pygame_menu.themes.THEME_DARK)
+rules_menu = pygame_menu.Menu(width=width, height=height, title='about', theme=pygame_menu.themes.THEME_DARK)
+certificate = pygame_menu.Menu(width=width, height=height, title='Rippus', theme=pygame_menu.themes.THEME_DARK)
+
+menu.add.text_input('Name : ', default='n00bmaster69', onchange=lambda x:globals().update(name=x))
+menu.add.color_input('Colour : ', color_type='rgb', default=colour, onchange=lambda x:globals().update(colour=x))
+menu.add.button('Play', game_menu)
+menu.add.button('Game Rules', rules_menu)
+menu.add.button('Quit', pygame_menu.events.EXIT)
+
+def difficulty_change(x,y):
+    global difficulty,token
+    difficulty = y
+    token = ''.join(random.choices('0123456789abcdef', k=8))
+
+game_menu.add.text_input('Host : ', default='localhost', onchange=lambda x:globals().update(host=x))
+game_menu.add.text_input('Port : ', default='6969', onchange=lambda x:globals().update(port=int(x)))
+game_menu.add.text_input('Room : ', default='1234', onchange=lambda x:globals().update(room=x))
+items=[('Beginner', 0),
+        ('Apprentice', 1),
+        ('Knight', 2),
+        ('Master', 3),
+        ('Sage', 4)]
+game_menu.add.selector('Difficulty: ', items=items, onchange=difficulty_change)
+game_menu.add.button('Start', gameHackySolu)
+game_menu.add.button('Back', pygame_menu.events.BACK)
+
+rules_menu.add.button('Back', pygame_menu.events.BACK)
+
 def game():
+    global token
+    global ohno
+    ohno = False
     print(host, port, room)
+    start = time.time()
     running = True
     while running:
         for event in pygame.event.get():
+            if event.type == KEYDOWN and event.key == K_ESCAPE:
+                running = False
             if event.type == pygame.QUIT:
                 running = False
 
         update(1/60)
-        screen.fill((0, 0, 0))
+        screen.fill((44, 45, 40))
+        if polygons == []:
+            token = ''.join(random.choices('0123456789abcdef', k=8))
+            #certificate.mainloop(screen)
+            global flag
+            global survivedTime
+            flag = True
+            if ohno:
+                certificate.clear()
+                certificate.add.label("Failed to connect")
+            else:
+                end = time.time()
+                print(end-start)
+                certificate.clear()
+                certificate.add.label(name)
+                certificate.add.label(str(datetime.timedelta(seconds=int(end-start))))
+            certificate.add.button('Back', cursed)
+            while flag:
+                certificate.draw(screen)
+                certificate.update(pygame.event.get())
+                pygame.display.update()
+            running = False
         for i, p in enumerate(polygons):
             #c = cols[i]
             #pyglet.graphics.draw(len(p) // 2, GL_POLYGON,
@@ -147,29 +223,6 @@ def game():
         pygame.display.flip()
         clock.tick(60)
 
-width, height = pygame.display.get_surface().get_size()
-menu = pygame_menu.Menu(width=width, height=height, title='Bonknogg', theme=pygame_menu.themes.THEME_DARK)
-game_menu = pygame_menu.Menu(width=width, height=height, title='Join', theme=pygame_menu.themes.THEME_DARK)
-rules_menu = pygame_menu.Menu(width=width, height=height, title='about', theme=pygame_menu.themes.THEME_DARK)
-
-menu.add.text_input('Name : ', default='n00bmaster69')
-menu.add.button('Play', game_menu)
-menu.add.button('Game Rules', rules_menu)
-menu.add.button('Quit', pygame_menu.events.EXIT)
-
-game_menu.add.text_input('Host : ', default='localhost', onchange=lambda x:globals().update(host=x))
-game_menu.add.text_input('Port : ', default='6969', onchange=lambda x:globals().update(port=int(x)))
-game_menu.add.text_input('Room : ', default='1234', onchange=lambda x:globals().update(room=x))
-items=[('Beginner', 0),
-        ('Apprentice', 1),
-        ('Knight', 2),
-        ('Master', 3),
-        ('Sage', 4)]
-game_menu.add.selector('Difficulty: ', items=items)
-game_menu.add.button('Start', game)
-game_menu.add.button('Back', pygame_menu.events.BACK, onchange=lambda x,y:globals().update(difficulty=y), accept_kwargs=True)
-
-rules_menu.add.button('Back', pygame_menu.events.BACK)
 menu.mainloop(screen)
 #pyglet.clock.schedule_interval(update, 1/60)
 #pyglet.app.run()

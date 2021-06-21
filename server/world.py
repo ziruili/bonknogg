@@ -19,7 +19,8 @@ class World:
         self.cols = {}
         self.dp = {}
 
-        '''
+        random.seed(69)
+
         ground = self.world.CreateStaticBody(
                 position=(0,3),
                 shapes=b2PolygonShape(box=(18,0.3)),
@@ -40,22 +41,6 @@ class World:
                 shapes=b2PolygonShape(box=(2,0.35)),
         )
         self.objs.append(ground)
-
-        ground = self.world.CreateStaticBody(
-                position=(0,1),
-                shapes=b2PolygonShape(box=(0.1,3)),
-        )
-        self.objs.append(ground)
-        ground = self.world.CreateStaticBody(
-                position=(-21,5),
-                shapes=b2PolygonShape(box=(0.22,7)),
-        )
-        self.objs.append(ground)
-        ground = self.world.CreateStaticBody(
-                position=(21,5),
-                shapes=b2PolygonShape(box=(0.22,7)),
-        )
-        self.objs.append(ground)
         ground = self.world.CreateStaticBody(
                 position=(-5,4),
                 shapes=b2PolygonShape(vertices=[(2, 3), (0, 4), (3, 7)]),
@@ -66,33 +51,47 @@ class World:
                 shapes=b2PolygonShape(vertices=[(6, 1), (0.24, 4.24), (3, 7)]),
         )
         self.objs.append(ground)
-        '''
+
         ground = self.world.CreateStaticBody(
-                position=(2980,4),
+                position=(980,4),
                 shapes=b2PolygonShape(box=(5,0.35)),
         )
         self.objs.append(ground)
         ground = self.world.CreateStaticBody(
-                position=(3000,4),
+                position=(1000,4),
                 shapes=b2PolygonShape(box=(5,0.35)),
         )
         self.objs.append(ground)
         ground = self.world.CreateStaticBody(
-                position=(3020,4),
+                position=(1020,4),
                 shapes=b2PolygonShape(box=(5,0.35)),
         )
         self.objs.append(ground)
 
+        for i in range(69):
+            ground = self.world.CreateStaticBody(
+                    position=(2000 + (random.random() * 40 - 20),random.random() * 40 - 10),
+                    shapes=b2PolygonShape(box=(1,0.1)),
+            )
+            self.objs.append(ground)
+
+        vertices = []
+        for i in range(-7,8):
+            vertices.append((i,-(i*i)/16))
+        ground = self.world.CreateStaticBody(
+                position=(3000,0),
+                shapes=b2PolygonShape(vertices=vertices)
+        )
+        self.objs.append(ground)
 
         ground = self.world.CreateStaticBody(
                 position=(4000,4),
                 shapes=b2PolygonShape(box=(0.05,8)),
         )
         self.objs.append(ground)
-        random.seed(69)
         for i in range(22):
             ground = self.world.CreateStaticBody(
-                    position=(4000 + (random.random() * 40 - 20),random.random() * 30 - 12),
+                    position=(4000 + (random.random() * 20 - 10),random.random() * 30 - 12),
                     shapes=b2PolygonShape(box=(0.1,0.1)),
             )
             self.objs.append(ground)
@@ -130,11 +129,11 @@ class World:
             vs.extend(self.cols[tmptoken])
         # print(vs)
 
-        return {'sz': sz, 'vs': vs}
+        return {'sz': sz, 'vs': vs, 'rn': self.players[token].position.y>=-20}
 
 
-    def add_player(self, token):
-        p1 = self.world.CreateDynamicBody(position=(4000,7.2))
+    def add_player(self, token, difficulty, colour):
+        p1 = self.world.CreateDynamicBody(position=(difficulty*1000,7.2))
         p1f = p1.CreateFixture(
                 shape=b2CircleShape(pos=(0, 0), radius=0.2),
                 density=7.95775387622, friction=0.2, restitution=0.5
@@ -145,7 +144,7 @@ class World:
         self.players[token] = p1
         self.dp[token] = [p1.position.x, p1.position.y]
         self.acc[token] = 0
-        self.cols[token] = [int(255 * random.random()), int(255 * random.random()), int(255 * random.random())]
+        self.cols[token] = [colour[0],colour[1],colour[2]]
 
         # dash
         self.dashes_left[token] = 1
@@ -196,9 +195,9 @@ class World:
 
             self.dash_frame[token] -= 1
 
-    def parse(self, token, keys):
+    def parse(self, token, difficulty, colour, keys):
         if not token in self.players:
-            self.add_player(token)
+            self.add_player(token, difficulty, colour)
 
         p1 = self.players[token]
         acc = self.acc[token]
@@ -260,6 +259,6 @@ class WorldManager:
         keys = json.loads(headers['X'])
         # TODO: choose a world
         # right now, every client that connects share a world
-        return self.worlds[room].parse(headers['token'], keys)
+        return self.worlds[room].parse(headers['token'], headers['difficulty'], headers['colour'], keys)
 
 

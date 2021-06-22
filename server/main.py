@@ -6,6 +6,7 @@ import json
 from server.world import WorldManager
 
 host = '0'#sys.argv[1]
+port = sys.argv[1]
 
 wm = WorldManager()
 
@@ -25,7 +26,7 @@ def main():
     game = threading.Thread(target=main_game)
     game.start()
 
-    with socketserver.UDPServer((host, 6969), Server) as a:
+    with socketserver.UDPServer((host, int(port)), Server) as a:
         a.serve_forever()
 
 main()

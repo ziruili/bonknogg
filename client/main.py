@@ -185,6 +185,27 @@ game_menu.add.selector('Difficulty: ', items=items, onchange=difficulty_change)
 game_menu.add.button('Start', gameHackySolu)
 game_menu.add.button('Back', pygame_menu.events.BACK)
 
+Controls = """Press left and right arrows to move horizontally
+Press c to jump
+Press down to fall quicker
+Press x with arrow keys to dash in that direction
+Each dash charges the mana counter, which is located at the top of the screen
+If your mana counter is above 3, you can use the shockwave, which will take 3 away from your mana
+The shockwave will blast nearby opponents away
+Press esc to exit the game
+"""
+Advanced_Movement = """Super: Dash along the ground and press jump before the dash is over. You will see a burst of speed
+Hyper: Jump a bit, then dash diagonally into the ground. Jump when you hit the ground to see a burst of speed
+Extended Super/Hyper: Your dash is recharged after a super/hyper, use this to get to new places
+Ultra: The fact that your dash is retained after the Hyper means that you can chain them.
+This move is called the Chained Ultra or just Ultra if you do only one.
+Cornerboost: Sometimes the dash can clip around corners and regain your dash, this is useful to know for quick movements.
+"""
+
+rules_menu.add.label('Controls')
+rules_menu.add.label(Controls, font_size = 20)
+rules_menu.add.label('Advanced Movement')
+rules_menu.add.label(Advanced_Movement, font_size = 20)
 rules_menu.add.button('Back', pygame_menu.events.BACK)
 
 def game():

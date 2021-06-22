@@ -80,7 +80,7 @@ class World:
         for i in range(-7,8):
             vertices.append((i,-(i*i)/16))
         ground = self.world.CreateStaticBody(
-                position=(3000,0),
+                position=(3000,5),
                 shapes=b2PolygonShape(vertices=vertices)
         )
         self.objs.append(ground)
@@ -134,6 +134,10 @@ class World:
         return {'sz': sz, 'vs': vs, 'rn': self.players[token].position.y>=-20, 'mn': self.mana[token]}
     #These variables are unreadable, but they are sent over the connection
     #Each byte counts, so the shorter the variable names the better
+    #sz=size
+    #vs=vertices
+    #rn=running
+    #mn=mana
 
 
     def add_player(self, token, difficulty, colour):

@@ -232,7 +232,9 @@ class World:
                 y = p2.position.y-p1.position.y
                 dist = math.sqrt(x*x+y*y)
                 # print(dist)
-                p2.ApplyForce(force=(500*x/(dist*dist),500*y/(dist*dist)),point=p2.position,wake=True)
+                x/=dist
+                y/=dist
+                p2.ApplyForce(force=(6900*math.exp(-x*x*0.03),6900*math.exp(-x*x*0.03)),point=p2.position,wake=True)
 
             self.mana[token]-=3
             self.shock_cooldown[token]=20

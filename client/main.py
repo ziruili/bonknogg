@@ -42,7 +42,7 @@ ohno = False
 mana = 0
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.settimeout(0.05)
+sock.settimeout(0.5)
 
 token = ''.join(random.choices('0123456789abcdef', k=8))
 

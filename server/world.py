@@ -90,12 +90,21 @@ class World:
                 shapes=b2PolygonShape(box=(0.05,8)),
         )
         self.objs.append(ground)
-        for i in range(22):
+        for i in range(69):
             ground = self.world.CreateStaticBody(
-                    position=(4000 + (random.random() * 20 - 10),random.random() * 30 - 12),
+                    position=(4000 + (random.random() * 20 - 10),random.random() * 15 - 5),
                     shapes=b2PolygonShape(box=(0.1,0.1)),
             )
             self.objs.append(ground)
+
+        #don't ask why this fixes the code but it does
+        ground = self.world.CreateStaticBody(
+                position=(42069,42069),
+                shapes=b2PolygonShape(box=(0.069,0.069)),
+        )
+        self.objs.append(ground)
+
+
         self.acc = {}
 
         # dash
@@ -156,7 +165,7 @@ class World:
 
         # dash
         self.dashes_left[token] = 1
-        self.mana[token] = 0
+        self.mana[token] = 5
         self.pf[token] = p1f
         self.dash_frame[token] = 0
         self.dash_dir[token] = {}
@@ -212,7 +221,7 @@ class World:
 
         p1 = self.players[token]
         acc = self.acc[token]
-        if keys['X'] and self.dashes_left[token] > 0 and self.dash_frame[token] < -15:
+        if keys['X'] and self.dashes_left[token] > 0 and self.dash_frame[token] < -30:
             self.dash_dir[token]['L'] = keys['L']
             self.dash_dir[token]['R'] = keys['R']
             self.dash_dir[token]['D'] = keys['D']
@@ -234,7 +243,8 @@ class World:
                 # print(dist)
                 x/=dist
                 y/=dist
-                p2.ApplyForce(force=(6900*math.exp(-x*x*0.03),6900*math.exp(-x*x*0.03)),point=p2.position,wake=True)
+                val=4200*math.exp(-dist*dist*0.25)
+                p2.ApplyForce(force=(x*val,y*val),point=p2.position,wake=True)
 
             self.mana[token]-=3
             self.shock_cooldown[token]=20

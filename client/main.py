@@ -224,7 +224,7 @@ def game():
 
         update(1/60)
         screen.fill((46, 52, 64))
-        if polygons == []:
+        if ohno == True or polygons == []:
             token = ''.join(random.choices('0123456789abcdef', k=8))
             #certificate.mainloop(screen)
             global flag

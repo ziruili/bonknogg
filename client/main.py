@@ -248,7 +248,7 @@ def game():
         for i, p in enumerate(polygons):
             #c = cols[i]
             #pyglet.graphics.draw(len(p) // 2, GL_POLYGON,
-                #('v2f', p), ('c3f', c):w
+                #('v2f', p), ('c3f', c)
 
             #)
             pygame.draw.polygon(surface=screen, color=cols[i], points=p)

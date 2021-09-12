@@ -69,9 +69,9 @@ class World:
         )
         self.objs.append(ground)
 
-        for i in range(69):
+        for i in range(24):
             ground = self.world.CreateStaticBody(
-                    position=(2000 + (random.random() * 40 - 20),random.random() * 40 - 10),
+                    position=(2000 + (random.random() * 30 - 15),random.random() * 30 - 10),
                     shapes=b2PolygonShape(box=(1,0.1)),
             )
             self.objs.append(ground)
@@ -90,9 +90,9 @@ class World:
                 shapes=b2PolygonShape(box=(0.05,8)),
         )
         self.objs.append(ground)
-        for i in range(69):
+        for i in range(24):
             ground = self.world.CreateStaticBody(
-                    position=(4000 + (random.random() * 20 - 10),random.random() * 15 - 5),
+                    position=(4000 + (random.random() * 10 - 5),random.random() * 15 - 5),
                     shapes=b2PolygonShape(box=(0.1,0.1)),
             )
             self.objs.append(ground)

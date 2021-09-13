@@ -69,15 +69,15 @@ class World:
         )
         self.objs.append(ground)
 
-        for i in range(24):
+        for i in range(16):
             ground = self.world.CreateStaticBody(
-                    position=(2000 + (random.random() * 30 - 15),random.random() * 30 - 10),
+                    position=(2000 + (random.random() *20 - 10),random.random() * 16 - 8),
                     shapes=b2PolygonShape(box=(1,0.1)),
             )
             self.objs.append(ground)
 
         vertices = []
-        for i in range(-7,8):
+        for i in range(-7,8,2):
             vertices.append((i,-(i*i)/16))
         ground = self.world.CreateStaticBody(
                 position=(3000,5),
@@ -90,12 +90,26 @@ class World:
                 shapes=b2PolygonShape(box=(0.05,8)),
         )
         self.objs.append(ground)
-        for i in range(24):
+
+        ground = self.world.CreateStaticBody(
+                position=(4003,4),
+                shapes=b2PolygonShape(box=(0.05,8)),
+        )
+        self.objs.append(ground)
+
+        ground = self.world.CreateStaticBody(
+                position=(3997,4),
+                shapes=b2PolygonShape(box=(0.05,8)),
+        )
+        self.objs.append(ground)
+
+
+        """for i in range(24):
             ground = self.world.CreateStaticBody(
                     position=(4000 + (random.random() * 10 - 5),random.random() * 15 - 5),
                     shapes=b2PolygonShape(box=(0.1,0.1)),
             )
-            self.objs.append(ground)
+            self.objs.append(ground)"""
 
         #don't ask why this fixes the code but it does
         ground = self.world.CreateStaticBody(
